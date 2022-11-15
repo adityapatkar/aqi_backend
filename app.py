@@ -13,24 +13,38 @@ def home():
 
 @app.route('/aqi', methods=['GET'])
 def aqi():
-    """Example endpoint returning a random number
+    """Example endpoint returning the aqi of a city
     ---
     parameters:
       - name: city
         in: query
         type: string
         required: true
+      - name: state
+        in: query
+        type: string
+        required: true
     responses:
         200:
             description: Aqi
+        400:
+            description: Bad Request
+        404:
+            description: Not Found
+        500:
+            description: Internal Server Error
     """
     try:
         try:
-            city = request.args.get("city")
+            #get city and state
+            city = request.args.get('city')
+            state = request.args.get('state')
+            state = state.replace(" ", "-")
+            city = city.replace(" ", "-")
         except:
             return jsonify({"error": "city not found"}), 400
         try:
-            aqi = scrape_real_time_aqi(city)
+            aqi = scrape_real_time_aqi(city, state)
             if aqi == -1:
                 return jsonify({"error": "no info about current aqi found"}), 404
         except:
