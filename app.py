@@ -46,6 +46,7 @@ def aqi():
         except:
             return jsonify({"error": "city not found"}), 400
         try:
+
             aqi = scrape_real_time_aqi(city, state)
             if aqi == -1:
                 return jsonify({
@@ -107,7 +108,7 @@ def insert_aqi():
         city = request.args.get('city')
         state = request.args.get('state')
         aqi = float(request.args.get('aqi'))
-        datetime = request.args.get('datetime')
+        date_time = request.args.get('datetime')
         if city is None or state is None or aqi is None or datetime is None:
             return jsonify({
                 "message": "missing parameters",
@@ -118,7 +119,7 @@ def insert_aqi():
             "city": city.lower(),
             "state": state.lower(),
             "aqi": aqi,
-            "datetime": datetime
+            "datetime": date_time
         }
         success, error = insert(data)
         if success:
