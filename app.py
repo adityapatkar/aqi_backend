@@ -127,8 +127,10 @@ def retrieve_aqi():
         state = request.args.get('state')
         if city is None or state is None:
             return jsonify({"message": "missing parameters", "error": "bad request", "code": "FAILURE"}), 400
+        city = city.replace(" ", "-")
+        state = state.replace(" ", "-")
         data = retrieve(city, state)
-        print(data)
+        
         if data is None:
             return jsonify({"message": "no data found", "error": "not found", "code": "FAILURE"}), 404
 

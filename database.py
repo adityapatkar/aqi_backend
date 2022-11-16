@@ -24,12 +24,11 @@ def retrieve(city, state):
     db = connect()
     # Get a handle to the posts collection
     # Find all matching documents
-    data = db.aqi.find({"city": city, "state": state})
+    data = db.aqi.find({"city": city.lower(), "state": state.lower()})
     data = list(data)
     #remove object id
     for d in data:
         d.pop("_id")
-    print(data)
     #sort by datetime
     data = sorted(data, key=lambda k: k['datetime'])
 
