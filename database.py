@@ -1,12 +1,15 @@
 import pymongo
 from env import srv
+
+
 def connect():
     # Connect to the database
     connection = pymongo.MongoClient(srv)
-    
+
     # Get a handle to the database
     db = connection.msml
     return db
+
 
 def insert(data):
     db = connect()
@@ -19,6 +22,7 @@ def insert(data):
     # Insert the data into the collection
     collection.insert_one(data)
     return True, None
+
 
 def retrieve(city, state):
     db = connect()
