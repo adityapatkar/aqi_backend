@@ -10,6 +10,9 @@ Swagger(app)
 
 @app.route('/')
 def home():
+    '''
+    Home
+    '''
     return redirect('/apidocs')
 
 
