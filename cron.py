@@ -1,7 +1,7 @@
 import requests
 from env import city, state, url
 
-response = requests.get(url + f"aqi?city={city}&state={state})")
+response = requests.get(url + f"aqi?city={city}&state={state}")
 if response.status_code == 200:
     print("Successfully fetched data")
     response = response.json()
