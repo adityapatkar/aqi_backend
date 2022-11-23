@@ -1,3 +1,8 @@
+'''
+    Cron jobs for the application
+'''
+#!/usr/bin/env python
+
 import requests
 from env import city, state, url
 

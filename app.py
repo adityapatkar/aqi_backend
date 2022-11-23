@@ -1,3 +1,8 @@
+'''
+    Home page for the app
+'''
+#!/usr/bin/env python
+
 from flask import Flask, jsonify, request, redirect
 from flasgger import Swagger
 from datetime import datetime

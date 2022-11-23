@@ -1,3 +1,8 @@
+'''
+    Everything related to database connection
+'''
+#!/usr/bin/env python
+
 import pymongo
 from env import srv
 
