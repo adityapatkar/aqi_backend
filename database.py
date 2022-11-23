@@ -8,7 +8,10 @@ from env import srv
 
 
 def connect():
-    # Connect to the database
+    '''
+        Connect to the database
+    '''
+
     connection = pymongo.MongoClient(srv)
 
     # Get a handle to the database
@@ -17,6 +20,9 @@ def connect():
 
 
 def insert(data):
+    '''
+        Insert data into the database
+    '''
     db = connect()
     # Get a handle to the posts collection
     collection = db.aqi
@@ -30,6 +36,10 @@ def insert(data):
 
 
 def retrieve(city, state):
+    '''
+        Retrieve data from the database
+    '''
+
     db = connect()
     # Get a handle to the posts collection
     # Find all matching documents
