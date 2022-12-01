@@ -51,7 +51,7 @@ def retrieve(city, state):
         d.pop("_id")
     #convert datetime string to datetime object
     for d in data:
-        d['datetime'] = datetime.strptime(d['datetime'], '%Y-%m-%d %H:%M:%S')
+        d['datetime'] = datetime.strptime(d['datetime'], '%d/%m/%Y %H:%M:%S')
     #sort by datetime
     data = sorted(data, key=lambda k: k['datetime'])
 
