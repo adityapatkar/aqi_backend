@@ -8,6 +8,7 @@ from flasgger import Swagger
 from datetime import datetime
 from scrape_aqi import scrape_real_time_aqi
 from database import insert, retrieve
+from prophet_model import predict_future
 
 app = Flask(__name__)
 Swagger(app)
@@ -180,6 +181,60 @@ def retrieve_aqi():
         city = city.replace(" ", "-")
         state = state.replace(" ", "-")
         data = retrieve(city, state)
+
+        if data is None:
+            return jsonify({
+                "message": "no data found",
+                "error": "not found",
+                "code": "FAILURE"
+            }), 404
+
+        return jsonify({
+            "data": data,
+            "message": "data retrieved successfully",
+            "code": "SUCCESS"
+        }), 200
+    except Exception as e:
+        print(e)
+        return jsonify({
+            "message": "something went wrong.",
+            "error": "internal server error",
+            "code": "FAILURE"
+        }), 500
+
+
+@app.route('/predict', methods=['GET'])
+def predict_aqi():
+    '''
+    Example endpoint to predict aqi data
+    ---
+    parameters:
+      - name: city
+        in: query
+        type: string
+        required: true
+      - name: state
+        in: query
+        type: string
+        required: true
+      - name: days
+        in: query
+        type: string
+        required: true
+
+    responses:
+        200:
+            description: AQI Predicted Successfully
+    '''
+    try:
+        city = request.args.get('city')
+        state = request.args.get('state')
+        days = int(request.args.get('days'))
+        hours = days * 24
+        data = predict_future(hours)
+
+        #convert dataframe to json
+        data = data.to_dict(orient='records')
 
         if data is None:
             return jsonify({

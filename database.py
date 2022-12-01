@@ -4,6 +4,7 @@
 #!/usr/bin/env python
 
 import pymongo
+from datetime import datetime
 from env import srv
 
 
@@ -48,7 +49,14 @@ def retrieve(city, state):
     #remove object id
     for d in data:
         d.pop("_id")
+    #convert datetime string to datetime object
+    for d in data:
+        d['datetime'] = datetime.strptime(d['datetime'], '%Y-%m-%d %H:%M:%S')
     #sort by datetime
     data = sorted(data, key=lambda k: k['datetime'])
+
+    #convert datetime object to string
+    for d in data:
+        d['datetime'] = d['datetime'].strftime("%d/%m/%Y %H:%M:%S")
 
     return data
