@@ -5,8 +5,14 @@
 
 import requests
 from env import city, state, url
+from prophet_model import fit_new_model
 
 response = requests.get(url + f"aqi?city={city}&state={state}")
+try:
+    error = fit_new_model()
+    print(error)
+except:
+    print("Cannot generate new model")
 if response.status_code == 200:
     print("Successfully fetched data")
     response = response.json()
