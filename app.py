@@ -278,6 +278,8 @@ def retrieve_all():
     try:
         city = request.args.get('city')
         state = request.args.get('state')
+        city = city.lower()
+        state = state.lower()
         data = retrieve_prediction(city, state)
 
         if data is None:

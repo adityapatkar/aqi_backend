@@ -74,14 +74,14 @@ def insert_prediction(data):
     #if datetime is already present, update the aqi
     for dictionary in data:
         if collection.find_one({
-                "city": dictionary['city'],
-                "state": dictionary['state'],
+                "city": dictionary['city'].lower(),
+                "state": dictionary['state'].lower(),
                 "datetime": dictionary['datetime']
         }):
             collection.update_one(
                 {
-                    "city": dictionary['city'],
-                    "state": dictionary['state'],
+                    "city": dictionary['city'].lower(),
+                    "state": dictionary['state'].lower(),
                     "datetime": dictionary['datetime']
                 }, {"$set": {
                     "yhat": dictionary['yhat']
