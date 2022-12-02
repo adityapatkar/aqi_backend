@@ -7,7 +7,7 @@ from flask import Flask, jsonify, request, redirect
 from flasgger import Swagger
 from datetime import datetime
 from scrape_aqi import scrape_real_time_aqi
-from database import insert, retrieve
+from database import insert, retrieve, retrieve_prediction
 from prophet_model import predict_future
 
 app = Flask(__name__)
@@ -235,6 +235,50 @@ def predict_aqi():
 
         #convert dataframe to json
         data = data.to_dict(orient='records')
+
+        if data is None:
+            return jsonify({
+                "message": "no data found",
+                "error": "not found",
+                "code": "FAILURE"
+            }), 404
+
+        return jsonify({
+            "data": data,
+            "message": "data retrieved successfully",
+            "code": "SUCCESS"
+        }), 200
+    except Exception as e:
+        print(e)
+        return jsonify({
+            "message": "something went wrong.",
+            "error": "internal server error",
+            "code": "FAILURE"
+        }), 500
+
+
+@app.route('/retrieve_all', methods=['GET'])
+def retrieve_all():
+    '''
+    Example endpoint to retrieve aqi prediction data
+    ---
+    parameters:
+      - name: city
+        in: query
+        type: string
+        required: true
+      - name: state
+        in: query
+        type: string
+        required: true
+    responses:
+        200:
+            description: AQI Retrieved Successfully
+    '''
+    try:
+        city = request.args.get('city')
+        state = request.args.get('state')
+        data = retrieve_prediction(city, state)
 
         if data is None:
             return jsonify({
