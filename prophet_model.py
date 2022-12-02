@@ -35,8 +35,7 @@ def fit_new_model():
         #convert the date_time column to datetime
         df['ds'] = pd.to_datetime(df['ds'])
         train = df[df['ds'] < pd.to_datetime('today')]
-        m = Prophet(interval_width=1,
-                    daily_seasonality=True,
+        m = Prophet(daily_seasonality=True,
                     weekly_seasonality=True,
                     changepoint_prior_scale=0.01)
         print("Done")
