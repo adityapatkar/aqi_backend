@@ -45,10 +45,13 @@ def fit_new_model():
             print("Saved successfully")
         #calculate error
         forecast = predict_future(periods=48)
+        forecast = forecast[['ds', 'yhat']]
         forecast = forecast.rename(columns={'ds': 'datetime'})
         forecast['city'] = city
         forecast['state'] = state
+        #convert to list of dictionaries
         forecast = forecast.to_dict('records')
+        print(forecast)
         #insert into database
         insert_prediction(forecast)
         return 0
