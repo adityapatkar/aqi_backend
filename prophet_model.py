@@ -35,8 +35,12 @@ def fit_new_model():
         #convert the date_time column to datetime
         df['ds'] = pd.to_datetime(df['ds'])
         train = df[df['ds'] < pd.to_datetime('today')]
-        m = Prophet(interval_width=1, daily_seasonality=True)
-        model = m.fit(df)
+        m = Prophet(interval_width=1,
+                    daily_seasonality=True,
+                    weekly_seasonality=True,
+                    changepoint_prior_scale=0.01)
+        print("Done")
+        model = m.fit(train)
         with open('serialized_model.json', 'w') as fout:
             json.dump(model_to_json(m), fout)  # Save model
             print("Saved successfully")
