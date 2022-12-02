@@ -34,7 +34,7 @@ def fit_new_model():
         #convert the lists to pandas dataframe
         df = pd.DataFrame(list(zip(date_time, aqi)), columns=['ds', 'y'])
         #convert the date_time column to datetime
-        df['ds'] = pd.to_datetime(df['ds'])
+        df['ds'] = pd.to_datetime(df['ds'], format="%d/%m/%Y %H:%M:%S")
         m = Prophet(changepoint_prior_scale=0.01)
         print("Done")
         model = m.fit(df)
