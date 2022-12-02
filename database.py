@@ -69,7 +69,7 @@ def insert_prediction(data):
     db = connect()
     # Get a handle to the posts collection
     collection = db.predictions
-    must = ['city', 'state', 'aqi', 'datetime']
+    must = ['city', 'state', 'datetime']
     for m in must:
         if m not in data:
             return False, m
