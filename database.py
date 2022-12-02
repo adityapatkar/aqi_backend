@@ -75,21 +75,22 @@ def insert_prediction(data):
             return False, m
     # Insert the data into the collection
     #if datetime is already present, update the aqi
-    if collection.find_one({
-            "city": data['city'],
-            "state": data['state'],
-            "datetime": data['datetime']
-    }):
-        collection.update_one(
-            {
-                "city": data['city'],
-                "state": data['state'],
-                "datetime": data['datetime']
-            }, {"$set": {
-                "yhat": data['yhat']
-            }})
-    else:
-        collection.insert_one(data)
+    for dictionary in data:
+        if collection.find_one({
+                "city": dictionary['city'],
+                "state": dictionary['state'],
+                "datetime": dictionary['datetime']
+        }):
+            collection.update_one(
+                {
+                    "city": dictionary['city'],
+                    "state": dictionary['state'],
+                    "datetime": dictionary['datetime']
+                }, {"$set": {
+                    "yhat": dictionary['yhat']
+                }})
+        else:
+            collection.insert_one(dictionary)
     print("inserted")
     return True, None
 
