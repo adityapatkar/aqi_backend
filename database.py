@@ -105,9 +105,6 @@ def retrieve_prediction(city, state):
     #remove object id
     for d in data:
         d.pop("_id")
-    #convert datetime string to datetime object
-    for d in data:
-        d['datetime'] = datetime.strptime(d['datetime'], '%d/%m/%Y %H:%M:%S')
     #sort by datetime
     data = sorted(data, key=lambda k: k['datetime'])
 
