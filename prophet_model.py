@@ -3,10 +3,11 @@ import pandas as pd
 from prophet.serialize import model_to_json, model_from_json
 from prophet import Prophet
 import json
-from env import url
+from env import url, city, state
+from database import insert_prediction
 
 
-def predict_future(periods):
+def predict_future(periods=48):
     with open('serialized_model.json', 'r') as fin:
         m = model_from_json(json.load(fin))
     future = m.make_future_dataframe(periods=periods, freq='h')
@@ -34,20 +35,21 @@ def fit_new_model():
         df = pd.DataFrame(list(zip(date_time, aqi)), columns=['ds', 'y'])
         #convert the date_time column to datetime
         df['ds'] = pd.to_datetime(df['ds'])
-        train = df[df['ds'] < pd.to_datetime('today')]
         m = Prophet(changepoint_prior_scale=0.01)
         print("Done")
-        model = m.fit(train)
+        model = m.fit(df)
+        #delete the old model file
         with open('serialized_model.json', 'w') as fout:
+
             json.dump(model_to_json(m), fout)  # Save model
             print("Saved successfully")
         #calculate error
-        forecast = m.predict(df)
-        forecast = forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
-        forecast = forecast.tail(24)
-        forecast['y'] = df['y'].tail(24)
-        forecast['error'] = abs(forecast['y'] - forecast['yhat'])
-        print("error: ", forecast['error'].mean())
-
-        return forecast['error'].mean()
+        forecast = predict_future(periods=48)
+        forecast = forecast.rename(columns={'ds': 'datetime'})
+        forecast['city'] = city
+        forecast['state'] = state
+        forecast = forecast.to_dict('records')
+        #insert into database
+        insert_prediction(forecast)
+        return 0
     return None
