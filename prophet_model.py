@@ -49,6 +49,8 @@ def fit_new_model():
         forecast = forecast.rename(columns={'ds': 'datetime'})
         forecast['city'] = city.lower().strip()
         forecast['state'] = state.lower().strip()
+        #change seconds of the datetime to 0
+        forecast['datetime'] = forecast['datetime'].dt.round('H')
         #convert to list of dictionaries
         forecast = forecast.to_dict('records')
         #insert into database
