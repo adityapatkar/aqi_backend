@@ -72,6 +72,8 @@ def insert_prediction(data):
     collection = db.predictions
     # Insert the data into the collection
     #if datetime is already present, update the aqi
+    updated = 0
+    inserted = 0
     for dictionary in data:
         if collection.find_one({
                 "city": dictionary['city'].lower(),
@@ -86,9 +88,12 @@ def insert_prediction(data):
                 }, {"$set": {
                     "yhat": dictionary['yhat']
                 }})
+            updated += 1
+
         else:
             collection.insert_one(dictionary)
-    print("inserted")
+            inserted += 1
+    print(f"inserted: {inserted}, updated: {updated}")
     return True, None
 
 
