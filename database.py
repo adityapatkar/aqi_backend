@@ -110,6 +110,12 @@ def retrieve_prediction(city, state):
     #remove object id
     for d in data:
         d.pop("_id")
+
+    #convert datetime string to datetime object
+    for d in data:
+        if isinstance(d['datetime'], str):
+            d['datetime'] = datetime.strptime(d['datetime'],
+                                              '%d/%m/%Y %H:%M:%S')
     #sort by datetime
     data = sorted(data, key=lambda k: k['datetime'])
 
@@ -118,3 +124,65 @@ def retrieve_prediction(city, state):
         d['datetime'] = d['datetime'].strftime("%d/%m/%Y %H:%M:%S")
 
     return data
+
+
+def delete():
+    #delete all the data where date is greater than 09/12/2022 21:00:00
+    db = connect()
+    # Get a handle to the posts collection
+    collection = db.predictions
+    collection.delete_many({"datetime": {"$gt": "09/12/2022 21:00:00"}})
+
+
+import json
+
+
+def download_as_json(city, state):
+    '''
+        Download data as json
+    '''
+    filename = f"{city}_{state}.json"
+    #get prediction data
+    data = retrieve_prediction(city, state)
+    with open(filename, 'w') as f:
+        json.dump(data, f)
+
+
+import pandas as pd
+
+
+def json_to_df(filename):
+    '''
+        Convert json to dataframe
+    '''
+    with open(filename, 'r') as f:
+        data = json.load(f)
+    df = pd.DataFrame(data)
+    #convert datetime string to datetime object
+    df['datetime'] = pd.to_datetime(df['datetime'], format="%d/%m/%Y %H:%M:%S")
+    #delete data where date is greater than 09/12/2022 21:00:00
+    compare_date = pd.to_datetime("09/12/2022 21:00:00",
+                                  format="%d/%m/%Y %H:%M:%S")
+
+    df = df[df['datetime'] < compare_date]
+    #convert datetime object to string
+    df['datetime'] = df['datetime'].dt.strftime("%d/%m/%Y %H:%M:%S")
+    #save to json
+    df.to_json(f"{filename.replace('.json', '_new.json')}", orient='records')
+    return df
+
+
+def delete_all():
+    db = connect()
+    # Get a handle to the posts collection
+    collection = db.predictions
+    collection.delete_many({})
+
+
+def insert_from_json(filename):
+    '''
+        Insert data from json
+    '''
+    df = json_to_df(filename)
+    data = df.to_dict('records')
+    insert_prediction(data)
