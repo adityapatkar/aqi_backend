@@ -35,6 +35,8 @@ def fit_new_model():
         df = pd.DataFrame(list(zip(date_time, aqi)), columns=['ds', 'y'])
         #convert the date_time column to datetime
         df['ds'] = pd.to_datetime(df['ds'], format="%d/%m/%Y %H:%M:%S")
+        #change seconds of the datetime to 0
+        df['ds'] = df['ds'].dt.round('H')
         m = Prophet(changepoint_prior_scale=0.05,
                     seasonality_mode='multiplicative')
         print("Done")
