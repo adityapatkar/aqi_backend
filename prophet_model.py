@@ -37,8 +37,10 @@ def fit_new_model():
         df['ds'] = pd.to_datetime(df['ds'], format="%d/%m/%Y %H:%M:%S")
         #change seconds of the datetime to 0
         df['ds'] = df['ds'].dt.round('H')
-        m = Prophet(changepoint_prior_scale=0.05,
-                    seasonality_mode='multiplicative')
+        m = Prophet(changepoint_prior_scale=0.5,
+                    seasonality_mode='multiplicative',
+                    daily_seasonality=True,
+                    weekly_seasonality=True)
         print("Done")
         model = m.fit(df)
         #delete the old model file
